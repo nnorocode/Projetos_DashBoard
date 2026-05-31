@@ -1,0 +1,423 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cronograma de Publicação de App</title>
+    <link rel="stylesheet" href="./styles.css?v=20260531-8" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <div class="brand">
+          <div class="brand-mark">NN</div>
+          <div>
+            <strong>Noro Tech</strong>
+            <span>Apple Store + Google Play</span>
+          </div>
+        </div>
+
+        <nav class="side-nav" aria-label="Navegação principal">
+          <a class="active" href="#visao-geral">
+            <span class="nav-icon"></span>
+            Visão geral
+          </a>
+          <a href="#cronograma" id="scheduleNavToggle">
+            <span class="nav-icon"></span>
+            Projetos
+          </a>
+          <div class="project-subnav" id="projectSubnav"></div>
+          <a href="#atividades">
+            <span class="nav-icon"></span>
+            Atividades
+          </a>
+        </nav>
+
+        <div class="sidebar-note">
+          <button class="primary-button full" id="addProjectButton" type="button">Novo projeto</button>
+        </div>
+      </aside>
+
+      <main class="workspace">
+        <header class="topbar" id="visao-geral">
+          <div>
+            <p class="section-label">Painel de execução</p>
+            <h1 id="projectTitle">Cronograma de Publicação</h1>
+          </div>
+          <div class="header-meta">
+            <span id="dataAtual"></span>
+          </div>
+          <div class="top-actions">
+            <button class="theme-toggle" id="themeToggle" type="button" aria-label="Alternar modo noturno">
+              <span class="toggle-track"><span class="toggle-thumb"></span></span>
+            </button>
+            <button class="ghost-button" id="resetButton" type="button">Restaurar fluxo</button>
+          </div>
+        </header>
+
+        <section class="kpi-grid" aria-label="Indicadores principais">
+          <article class="kpi-card" data-kpi="Todos" tabindex="0" role="button" aria-label="Ver todas as atividades">
+            <span>Total de atividades</span>
+            <strong id="kpiTotal">0</strong>
+            <small>Fluxo completo da ideia à publicação</small>
+            <em class="kpi-mini"><b id="kpiTotalToday">0</b> hoje · <b id="kpiTotalWeek">0</b> semana</em>
+          </article>
+          <article class="kpi-card success" data-kpi="Concluído" tabindex="0" role="button" aria-label="Ver atividades realizadas">
+            <span>Realizadas</span>
+            <strong id="kpiDone">0</strong>
+            <small id="doneHint">0% do plano concluído</small>
+            <em class="kpi-mini"><b id="kpiDoneToday">0</b> hoje · <b id="kpiDoneWeek">0</b> semana</em>
+          </article>
+          <article class="kpi-card danger" data-kpi="Em atraso" tabindex="0" role="button" aria-label="Ver atividades em atraso">
+            <span>Em atraso</span>
+            <strong id="kpiLate">0</strong>
+            <small>Datas vencidas sem conclusão</small>
+            <em class="kpi-mini"><b id="kpiLateToday">0</b> hoje · <b id="kpiLateWeek">0</b> semana</em>
+          </article>
+          <article class="kpi-card warning" data-kpi="No prazo" tabindex="0" role="button" aria-label="Ver atividades no prazo">
+            <span>No prazo</span>
+            <strong id="kpiOnTime">0</strong>
+            <small>Ativas e dentro do prazo</small>
+            <em class="kpi-mini"><b id="kpiOnTimeToday">0</b> hoje · <b id="kpiOnTimeWeek">0</b> semana</em>
+          </article>
+          <article class="kpi-card neutral" data-kpi="Não iniciado" tabindex="0" role="button" aria-label="Ver atividades não iniciadas">
+            <span>Não iniciadas</span>
+            <strong id="kpiTodo">0</strong>
+            <small>Aguardando início</small>
+            <em class="kpi-mini"><b id="kpiTodoToday">0</b> hoje · <b id="kpiTodoWeek">0</b> semana</em>
+          </article>
+          <article class="kpi-card info" data-kpi="Prioridade alta" tabindex="0" role="button" aria-label="Ver atividades de prioridade alta">
+            <span>Prioridade alta</span>
+            <strong id="kpiRisk">0</strong>
+            <small>Itens críticos do plano</small>
+            <em class="kpi-mini"><b id="kpiRiskToday">0</b> hoje · <b id="kpiRiskWeek">0</b> semana</em>
+          </article>
+        </section>
+
+        <section class="progress-panel" aria-labelledby="progressTitle">
+          <div>
+            <p class="section-label">Progresso geral</p>
+            <h2 id="progressTitle"><span id="progressValue">0%</span> de realização</h2>
+          </div>
+          <div class="progress-track" aria-label="Barra de percentual geral de realização">
+            <div class="progress-fill" id="progressFill"></div>
+          </div>
+        </section>
+
+        <div class="content-grid">
+          <section class="main-column">
+            <section class="panel" id="cronograma" aria-labelledby="timelineTitle">
+              <div class="panel-header">
+                <div>
+                  <p class="section-label">Cronograma</p>
+                  <h2 id="timelineTitle">Fases do projeto</h2>
+                </div>
+                <button class="icon-button phase-config-button" id="phaseConfigButton" type="button" aria-label="Configurar fases">&#9881;</button>
+              </div>
+              <div class="timeline" id="timeline"></div>
+            </section>
+
+            <section class="panel" id="atividades" aria-labelledby="activityTitle">
+              <div class="panel-header activity-header">
+                <div>
+                  <p class="section-label">Atividades</p>
+                  <h2 id="activityTitle">Lista operacional</h2>
+                </div>
+                <div class="filters" role="group" aria-label="Filtros de status">
+                  <button class="primary-button" id="addActivityButton" type="button">Inserir atividade</button>
+                  <button class="filter active" data-status="Todos" type="button">Todos</button>
+                  <button class="filter" data-status="Não iniciado" type="button">Não iniciado</button>
+                  <button class="filter" data-status="Em andamento" type="button">Em andamento</button>
+                  <button class="filter" data-status="Concluído" type="button">Concluído</button>
+                  <button class="filter" data-status="Não se aplica" type="button">Não se aplica</button>
+                  <button class="filter" data-status="No prazo" type="button">No prazo</button>
+                  <button class="filter" data-status="Em atraso" type="button">Em atraso</button>
+                </div>
+              </div>
+
+              <div class="table-wrap">
+                <noscript>
+                  <p class="script-warning">
+                    Ative o JavaScript do navegador para carregar as 70 atividades do cronograma.
+                  </p>
+                </noscript>
+                <table>
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>Atividade</th>
+                      <th>Fase</th>
+                      <th>Loja / Plataforma</th>
+                      <th>Responsável</th>
+                      <th>Prazo</th>
+                      <th>Status</th>
+                      <th>Prioridade</th>
+                      <th>Ações</th>
+                    </tr>
+                  </thead>
+                  <tbody id="activityTable"></tbody>
+                </table>
+              </div>
+            </section>
+          </section>
+
+          <aside class="right-rail" id="riscos">
+            <section class="panel compact" id="lojas">
+              <p class="section-label">Resumo de todos os projetos</p>
+              <div class="store-row">
+                <span>Total de atividades</span>
+                <strong id="allProjectsTotal">0</strong>
+              </div>
+              <div class="store-row">
+                <span>Para hoje</span>
+                <strong id="allProjectsToday">0</strong>
+              </div>
+              <div class="store-row">
+                <span>Realizadas</span>
+                <strong id="allProjectsDone">0</strong>
+              </div>
+              <div class="store-row">
+                <span>Em atraso</span>
+                <strong id="allProjectsLate">0</strong>
+              </div>
+            </section>
+
+            <section class="panel compact next-card">
+              <p class="section-label">Próxima atividade</p>
+              <h2 id="nextActionTitle">Definir ideia do app</h2>
+              <p id="nextActionText">Comece pela descrição simples do problema, público e função principal.</p>
+              <button class="primary-button full" id="startNextButton" type="button">Marcar como em andamento</button>
+            </section>
+
+            <section class="panel compact progress-card">
+              <div class="rail-filter">
+                <label>
+                  <span>Filtrar por loja</span>
+                  <select id="storeFilter">
+                    <option>Todas</option>
+                    <option>Apple</option>
+                    <option>Google</option>
+                    <option>Geral</option>
+                  </select>
+                </label>
+              </div>
+              <p class="section-label">Progresso geral</p>
+              <div class="rail-progress">
+                <div>
+                  <strong id="railProgressValue">0%</strong>
+                  <span>Conclusão do projeto</span>
+                </div>
+                <div class="donut" id="progressDonut"></div>
+              </div>
+            </section>
+
+            <section class="panel compact">
+              <p class="section-label">Insights do projeto</p>
+              <div class="insight-row"><span>Atividades em atraso</span><strong id="insightLate">0</strong></div>
+              <div class="insight-row"><span>A vencer nos próximos 7 dias</span><strong id="insightSoon">0</strong></div>
+              <div class="insight-row"><span>Concluídas esta semana</span><strong id="insightDoneWeek">0</strong></div>
+              <div class="insight-row"><span>Taxa de conclusão prevista</span><strong id="insightForecast">0%</strong></div>
+            </section>
+
+            <section class="panel compact">
+              <p class="section-label">Prioridades</p>
+              <ul class="risk-list" id="riskList"></ul>
+            </section>
+
+            <section class="panel compact">
+              <p class="section-label">Saúde do projeto</p>
+              <div class="health-meter">
+                <div class="health-ring" id="healthRing">0</div>
+                <div>
+                  <strong id="healthLabel">A iniciar</strong>
+                  <span id="healthText">Preencha status e prazos para medir o andamento.</span>
+                </div>
+              </div>
+            </section>
+
+          </aside>
+        </div>
+      </main>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <div class="modal-backdrop" id="projectModal" aria-hidden="true">
+      <section class="modal small-modal" role="dialog" aria-modal="true" aria-labelledby="projectModalTitle">
+        <div class="modal-header">
+          <div>
+            <p class="section-label">Projeto</p>
+            <h2 id="projectModalTitle">Novo projeto</h2>
+          </div>
+          <button class="icon-button" id="closeProjectModalButton" type="button" aria-label="Fechar">&times;</button>
+        </div>
+
+        <form class="activity-form" id="projectForm">
+          <label>
+            <span>Nome do projeto</span>
+            <input id="projectNameInput" name="projectName" type="text" required placeholder="Ex: App cliente novo" />
+          </label>
+
+          <div class="modal-actions">
+            <button class="ghost-button" id="cancelProjectModalButton" type="button">Cancelar</button>
+            <button class="primary-button" type="submit">Salvar projeto</button>
+          </div>
+        </form>
+      </section>
+    </div>
+    <div class="modal-backdrop" id="deleteProjectModal" aria-hidden="true">
+      <section class="modal small-modal" role="dialog" aria-modal="true" aria-labelledby="deleteProjectTitle">
+        <div class="modal-header">
+          <div>
+            <p class="section-label">Projeto</p>
+            <h2 id="deleteProjectTitle">Excluir projeto</h2>
+          </div>
+          <button class="icon-button" id="closeDeleteProjectButton" type="button" aria-label="Fechar">&times;</button>
+        </div>
+        <div class="confirm-body">
+          <p id="deleteProjectText">Deseja excluir este projeto?</p>
+          <div class="modal-actions">
+            <button class="ghost-button" id="cancelDeleteProjectButton" type="button">Cancelar</button>
+            <button class="primary-button danger-button" id="confirmDeleteProjectButton" type="button">Excluir projeto</button>
+          </div>
+        </div>
+      </section>
+    </div>
+    <div class="modal-backdrop" id="duplicateProjectModal" aria-hidden="true">
+      <section class="modal small-modal" role="dialog" aria-modal="true" aria-labelledby="duplicateProjectTitle">
+        <div class="modal-header">
+          <div>
+            <p class="section-label">Projeto</p>
+            <h2 id="duplicateProjectTitle">Duplicar atividades</h2>
+          </div>
+          <button class="icon-button" id="closeDuplicateProjectButton" type="button" aria-label="Fechar">&times;</button>
+        </div>
+        <div class="confirm-body">
+          <label>
+            <span id="duplicateProjectText">Copiar atividades para:</span>
+            <select id="duplicateProjectTarget"></select>
+          </label>
+          <div class="modal-actions">
+            <button class="ghost-button" id="cancelDuplicateProjectButton" type="button">Cancelar</button>
+            <button class="primary-button" id="confirmDuplicateProjectButton" type="button">Duplicar atividades</button>
+          </div>
+        </div>
+      </section>
+    </div>
+    <div class="modal-backdrop" id="phaseModal" aria-hidden="true">
+      <section class="modal small-modal" role="dialog" aria-modal="true" aria-labelledby="phaseModalTitle">
+        <div class="modal-header">
+          <div>
+            <p class="section-label">Projeto</p>
+            <h2 id="phaseModalTitle">Fases do projeto</h2>
+          </div>
+          <button class="icon-button" id="closePhaseModalButton" type="button" aria-label="Fechar">&times;</button>
+        </div>
+        <form class="activity-form" id="phaseForm">
+          <p class="form-help">Reordene, renomeie, adicione ou exclua fases deste projeto.</p>
+          <div class="phase-options" id="phaseOptions"></div>
+          <div class="phase-add-row">
+            <input id="newPhaseName" type="text" placeholder="Nova fase" />
+            <button class="ghost-button" id="addPhaseButton" type="button">Adicionar fase</button>
+          </div>
+          <div class="modal-actions">
+            <button class="ghost-button" id="cancelPhaseModalButton" type="button">Cancelar</button>
+            <button class="primary-button" type="submit">Salvar fases</button>
+          </div>
+        </form>
+      </section>
+    </div>
+    <div class="modal-backdrop" id="activityModal" aria-hidden="true">
+      <section class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+        <div class="modal-header">
+          <div>
+            <p class="section-label">Nova atividade</p>
+            <h2 id="modalTitle">Inserir atividade</h2>
+          </div>
+          <button class="icon-button" id="closeModalButton" type="button" aria-label="Fechar">&times;</button>
+        </div>
+
+        <form class="activity-form" id="activityForm">
+          <label>
+            <span>Título</span>
+            <input id="newTitle" name="title" type="text" required placeholder="Ex: Criar tela de cadastro" />
+          </label>
+
+          <label>
+            <span>Descrição</span>
+            <textarea id="newDescription" name="description" required rows="3" placeholder="Descreva o que precisa ser feito"></textarea>
+          </label>
+
+          <div class="form-grid">
+            <label>
+              <span>Fase</span>
+              <select id="newPhase" name="phase" required></select>
+            </label>
+
+            <label>
+              <span>Status</span>
+              <select id="newStatus" name="status" required>
+                <option>Não iniciado</option>
+                <option>Em andamento</option>
+                <option>Concluído</option>
+                <option>Não se aplica</option>
+              </select>
+            </label>
+
+            <label>
+              <span>Prazo</span>
+              <input id="newDue" name="due" type="date" required />
+            </label>
+
+            <label>
+              <span>Responsável</span>
+              <input id="newResponsible" name="responsible" type="text" placeholder="Ex: Amanda Martins" />
+            </label>
+
+            <label>
+              <span>Prioridade</span>
+              <select id="newPriority" name="priority" required>
+                <option>Alta</option>
+                <option>Média</option>
+              </select>
+            </label>
+          </div>
+
+          <fieldset>
+            <legend>Plataforma</legend>
+            <label class="check-row"><input name="platform" type="checkbox" value="Geral" checked /> Geral</label>
+            <label class="check-row"><input name="platform" type="checkbox" value="Apple" /> Apple</label>
+            <label class="check-row"><input name="platform" type="checkbox" value="Google" /> Google</label>
+          </fieldset>
+
+          <label class="check-row">
+            <input id="newBlocker" name="blocker" type="checkbox" />
+            Marcar como risco alto / bloqueadora
+          </label>
+
+          <div class="modal-actions">
+            <button class="ghost-button" id="cancelModalButton" type="button">Cancelar</button>
+            <button class="primary-button" type="submit">Salvar atividade</button>
+          </div>
+        </form>
+      </section>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script>
+      const hoje = new Date();
+
+      const opcoes = {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric'
+      };
+
+      const dataFormatada = hoje.toLocaleDateString('pt-BR', opcoes);
+
+      document.getElementById("dataAtual").textContent =
+        `Hoje, ${dataFormatada}`;
+    </script>
+    
+    <script src="./app.js?v=20260531-8" defer></script>
+  </body>
+</html>
